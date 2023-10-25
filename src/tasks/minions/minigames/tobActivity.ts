@@ -73,17 +73,17 @@ export const tobTask: MinionTask = {
 			// 100k tax if they wipe
 			if (wipedRoom !== null) {
 				wipeCount++;
-				resultMessage += `\n${raidId}: Your team wiped in the Theatre of Blood, in the ${
-					TOBRooms[wipedRoom].name
-				} room!${diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''}`;
+				resultMessage += `Your team wiped in the Theatre of Blood, in the ${TOBRooms[wipedRoom].name} room!${
+					diedToMaiden ? ' The team died very early, and nobody learnt much from this raid.' : ''
+				}`;
 				// They each paid 100k tax, it doesn't get refunded, so track it in economy stats.
 				globalTobCost.add('Coins', users.length * 100_000);
 				continue;
 			}
 
-			resultMessage += `\n${raidId}: Unique chance: ${result.percentChanceOfUnique.toFixed(
-				2
-			)}% (1 in ${convertPercentChance(result.percentChanceOfUnique)})`;
+			resultMessage += `Unique chance: ${result.percentChanceOfUnique.toFixed(2)}% (1 in ${convertPercentChance(
+				result.percentChanceOfUnique
+			)})`;
 
 			// Track loot for T3+ patrons
 			await Promise.all(
@@ -140,7 +140,7 @@ export const tobTask: MinionTask = {
 				const lootStr = userLoot.remove('Coins', 100_000).toString();
 				const str = isPurple ? `${Emoji.Purple} ||${lootStr.padEnd(30, ' ')}||` : `||${lootStr}||`;
 
-				resultMessage += `\n${raidId}: ${deathStr}**${user}** received: ${str}`;
+				resultMessage += `${deathStr}**${user}** received: ${str}`;
 			}
 		}
 		// Give everyone their loot:
