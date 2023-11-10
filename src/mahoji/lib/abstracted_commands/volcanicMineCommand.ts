@@ -86,6 +86,11 @@ export const VolcanicMineShop: { name: string; output: Bank; cost: number; clOnl
 		output: new Bank({ 'Ash covered tome': 1 }),
 		cost: 40_000,
 		clOnly: true
+	},
+	{
+		name: 'Ore Pack',
+		output: new Bank({ 27_693: 1 }),
+		cost: 4000
 	}
 ];
 

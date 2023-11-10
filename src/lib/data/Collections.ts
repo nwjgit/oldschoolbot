@@ -843,6 +843,7 @@ export const allCollectionLogs: ICollection = {
 			},
 			'Volcanic Mine': {
 				items: volcanicMineCL,
+				allItems: resolveItems(['Ore pack', 'Dragon pickaxe (broken)']),
 				alias: ['vm', 'vmine', 'volcanic'],
 				isActivity: true,
 				fmtProg: mgProg('volcanic_mine')
