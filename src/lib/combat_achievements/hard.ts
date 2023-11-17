@@ -1,7 +1,7 @@
 import { Monsters } from 'oldschooljs';
 
 import { demonBaneWeapons, NIGHTMARE_ID } from '../constants';
-import { anglerOutfit } from '../data/CollectionsExport';
+import { anglerOutfit, spiritAnglerOutfit } from '../data/CollectionsExport';
 import { Requirements } from '../structures/Requirements';
 import { TOAOptions } from '../types/minions';
 import { isCertainMonsterTrip } from './caUtils';
@@ -587,7 +587,8 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		desc: 'Subdue Tempoross while wearing any variation of the angler outfit.',
 		rng: {
 			chancePerKill: 1,
-			hasChance: (data, user) => data.type === 'Tempoross' && user.hasEquipped(anglerOutfit, false)
+			hasChance: (data, user) =>
+				data.type === 'Tempoross' && user.hasEquipped([...anglerOutfit, ...spiritAnglerOutfit], false)
 		}
 	},
 	{
@@ -629,7 +630,7 @@ export const hardCombatAchievements: CombatAchievement[] = [
 		id: 254,
 		name: 'Confident Raider',
 		type: 'restriction',
-		monster: 'Theatre of Blood: Entry Mode',
+		monster: 'Tombs of Amascut: Entry Mode',
 		desc: 'Complete a Tombs of Amascut raid at level 100 or above.',
 		requirements: new Requirements().add({
 			minigames: {
