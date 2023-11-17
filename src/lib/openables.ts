@@ -315,13 +315,22 @@ const osjsOpenables: UnifiedOpenable[] = [
 		allItems: Openables.SinisterChest.table.allItems
 	},
 	{
-		name: 'Ore pack',
+		name: "Ore pack (Giant's Foundry)",
 		id: 27_019,
 		openedItem: getOSItem(27_019),
-		aliases: ['ore pack'],
-		output: Openables.OrePack.table,
-		allItems: Openables.OrePack.table.allItems
+		aliases: ['giants foundry'],
+		output: Openables.GiantsFoundryOrePack.table,
+		allItems: Openables.GiantsFoundryOrePack.table.allItems
 	},
+	{
+		name: 'Ore pack (Volcanic Mine)',
+		id: 27_693,
+		openedItem: getOSItem(27_693),
+		aliases: ['volcanic mine'],
+		output: Openables.VolcanicMineOrePack.table,
+		allItems: Openables.VolcanicMineOrePack.table.allItems
+	},
+
 	{
 		name: 'Intricate pouch',
 		id: 26_908,
