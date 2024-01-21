@@ -1,11 +1,11 @@
 import { formatOrdinal } from '@oldschoolgg/toolkit';
 import { bold } from 'discord.js';
-import { isObject, Time, uniqueArr } from 'e';
+import { isObject, randArrItem, Time, uniqueArr } from 'e';
 import { Bank } from 'oldschooljs';
 import { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { drawChestLootImage } from '../../../lib/bankImage';
-import { Emoji, Events, toaPurpleItems } from '../../../lib/constants';
+import { CHINCANNON_MESSAGES, Emoji, Events, toaPurpleItems } from '../../../lib/constants';
 import { toaCL } from '../../../lib/data/CollectionsExport';
 import { trackLoot } from '../../../lib/lootTrack';
 import { getMinigameScore, incrementMinigameScore } from '../../../lib/settings/settings';
@@ -21,8 +21,7 @@ import { TOAOptions } from '../../../lib/types/minions';
 import { handleTripFinish } from '../../../lib/util/handleTripFinish';
 import { assert } from '../../../lib/util/logError';
 import resolveItems from '../../../lib/util/resolveItems';
-import { updateBankSetting } from '../../../lib/util/updateBankSetting';
-import { userStatsUpdate } from '../../../mahoji/mahojiSettings';
+import { userStatsBankUpdate, userStatsUpdate } from '../../../mahoji/mahojiSettings';
 
 const purpleButNotAnnounced = resolveItems([
 	"Elidinis' ward",
@@ -133,21 +132,21 @@ export const toaTask: MinionTask = {
 			  }! Your KC is now ${minigameIncrementResult[0].newScore}.\n`
 			: `<@${leader}> Your Raid${quantity > 1 ? 's have' : ' has'} finished.\n`;
 
-		const shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
+		let shouldShowImage = allUsers.length <= 3 && totalLoot.entries().every(i => i[1].length <= 6);
 
 		for (let [userID, userData] of raidResults.entries()) {
 			const { points, deaths, mUser: user } = userData;
-			if (!chincannonUser) {
-				await userStatsUpdate(
-					user.id,
-					{
-						total_toa_points: {
-							increment: points
-						}
-					},
-					{}
-				);
-			}
+
+			// Increment the users total toa points
+			await userStatsUpdate(
+				user.id,
+				{
+					total_toa_points: {
+						increment: points
+					}
+				},
+				{}
+			);
 
 			// If the user already has these in their bank they cannot get another
 			for (const itemID of [...toaPetTransmogItems, ...toaOrnamentKits.map(i => i[0].id)]) {
@@ -230,11 +229,28 @@ export const toaTask: MinionTask = {
 			resultMessage += `\n\n${messages.join('\n')}`;
 		}
 
-		if (!chincannonUser) {
-			updateBankSetting('toa_loot', totalLoot.totalLoot());
+		if (chincannonUser) {
+			// log all the loot destroyed by chincannon
+			await Promise.all(
+				allUsers.map(user =>
+					userStatsBankUpdate(
+						user.id,
+						'chincannon_destroyed_loot_bank',
+						new Bank(totalLoot.get(user.id))
+					).then(() => ({
+						itemsAdded: new Bank()
+					}))
+				)
+			);
+			// Notify the user their loot was destroyed if using chincannon
+			let msg = randArrItem(CHINCANNON_MESSAGES);
+			resultMessage += `\n\n**${msg}**`;
+			shouldShowImage = false;
 		}
+
+		const effectiveTotalLoot = chincannonUser ? new Bank() : totalLoot.totalLoot();
 		await trackLoot({
-			totalLoot: totalLoot.totalLoot(),
+			totalLoot: effectiveTotalLoot,
 			id: 'tombs_of_amascut',
 			type: 'Minigame',
 			changeType: 'loot',
@@ -247,6 +263,7 @@ export const toaTask: MinionTask = {
 			}))
 		});
 
+		// Custom function for toa loot image that shows deaths and points
 		function makeCustomTexts(userID: string) {
 			const user = raidResults.get(userID)!;
 			return [
@@ -263,6 +280,7 @@ export const toaTask: MinionTask = {
 			];
 		}
 
+		// Trip finish if solo
 		if (isSolo) {
 			return handleTripFinish(
 				allUsers[0],
@@ -286,7 +304,8 @@ export const toaTask: MinionTask = {
 			);
 		}
 
-		handleTripFinish(
+		// Trip finish if not solo
+		return handleTripFinish(
 			allUsers[0],
 			channelID,
 			resultMessage,
