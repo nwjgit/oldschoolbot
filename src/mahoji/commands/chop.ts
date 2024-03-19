@@ -160,13 +160,12 @@ export const chopCommand: OSBMahojiCommand = {
 				boosts.push('+7 invisible WC lvls at the Woodcutting guild');
 				wcLvl += 7;
 			}
+			// Enable 1.5 tick teaks/Mahogany half way to 99, and not doing forestry events
+			if (skills.woodcutting >= 92 && resolveItems(['Teak logs', 'Mahogany logs']).includes(log.id)) {
+				boosts.push(`1.5t woodcutting ${log.name === 'Teak Logs' ? 'teak' : 'mahogany'} trees with 92+ wc`);
+			}
 		} else {
 			boosts.push('Participating in Forestry events');
-		}
-
-		// Enable 1.5 tick teaks half way to 99
-		if (skills.woodcutting >= 92 && (log.name === 'Teak Logs' || log.name === 'Mahogany Logs')) {
-			boosts.push('1.5t teak/mahogany chopping with 92+ wc');
 		}
 
 		// Default bronze axe, last in the array
@@ -209,6 +208,7 @@ export const chopCommand: OSBMahojiCommand = {
 			log,
 			axeMultiplier,
 			powerchopping: powerchop,
+			forestry: forestry_events,
 			woodcuttingLvl: wcLvl
 		});
 

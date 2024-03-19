@@ -1,11 +1,14 @@
 import { Monsters } from 'oldschooljs';
 
+import { soteSkillRequirements } from '../skilling/functions/questRequirements';
 import {
 	ActivityTaskData,
 	AgilityActivityTaskOptions,
 	MonsterActivityTaskOptions,
-	PickpocketActivityTaskOptions
+	PickpocketActivityTaskOptions,
+	WoodcuttingActivityTaskOptions
 } from '../types/minions';
+import { itemID } from '../util';
 
 export const enum WorldLocations {
 	Priffdinas,
@@ -15,7 +18,8 @@ export const enum WorldLocations {
 const WorldLocationsChecker = [
 	{
 		area: WorldLocations.Priffdinas,
-		checker: (activity: ActivityTaskData) => {
+		checker: (user: MUser, activity: ActivityTaskData) => {
+			if (!(user.hasSkillReqs(soteSkillRequirements) && user.QP >= 150)) return false;
 			if (['Gauntlet', 'Zalcano'].includes(activity.type)) return true;
 			if (
 				activity.type === 'MonsterKilling' &&
@@ -37,15 +41,22 @@ const WorldLocationsChecker = [
 			) {
 				return true;
 			}
+			if (
+				activity.type === 'Woodcutting' &&
+				((activity as WoodcuttingActivityTaskOptions).logID === itemID('Teak logs') ||
+					(activity as WoodcuttingActivityTaskOptions).logID === itemID('Mahogany logs'))
+			) {
+				return true;
+			}
 
 			return false;
 		}
 	}
 ];
 
-export default function activityInArea(activity: ActivityTaskData) {
+export default function activityInArea(user: MUser, activity: ActivityTaskData) {
 	for (const checkLocation of WorldLocationsChecker) {
-		if (checkLocation.checker(activity)) return checkLocation.area;
+		if (checkLocation.checker(user, activity)) return checkLocation.area;
 	}
 	return WorldLocations.World;
 }
