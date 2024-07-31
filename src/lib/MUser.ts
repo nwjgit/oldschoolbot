@@ -10,11 +10,16 @@ import { EquipmentSlot } from 'oldschooljs/dist/meta/types';
 import { resolveItems } from 'oldschooljs/dist/util/util';
 import { timePerAlch } from '../mahoji/lib/abstracted_commands/alchCommand';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
 import { userStatsUpdate } from '../mahoji/mahojiSettings';
 =======
 import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { getParsedStashUnits } from '../mahoji/lib/abstracted_commands/stashUnitsCommand';
+import { fetchUserStats, userStatsUpdate } from '../mahoji/mahojiSettings';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { addXP } from './addXP';
 import type { GodFavourBank, GodName } from './bso/divineDominion';
 import { userIsBusy } from './busyCounterCache';
@@ -51,8 +56,9 @@ import type { ChargeBank, XPBank } from './structures/Banks';
 import { Gear } from './structures/Gear';
 import { MTame } from './structures/MTame';
 import type { Skills } from './types';
-import { addItemToBank, convertXPtoLVL, getAllIDsOfUser, itemNameFromID } from './util';
+import { addItemToBank, convertXPtoLVL, itemNameFromID } from './util';
 import { determineRunes } from './util/determineRunes';
+import { findGroupOfUser } from './util/findGroupOfUser';
 import { getKCByName } from './util/getKCByName';
 import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
@@ -930,7 +936,7 @@ Charge your items using ${mentionCommand(globalClient, 'minion', 'charge')}.`
 			return;
 		}
 		if (background.owners) {
-			const userIDs = getAllIDsOfUser(this);
+			const userIDs = await findGroupOfUser(this.id);
 			if (background.owners.some(owner => userIDs.includes(owner))) {
 				return;
 			}

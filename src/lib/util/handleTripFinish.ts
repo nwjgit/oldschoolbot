@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+=======
+import { Stopwatch, channelIsSendable, mentionCommand } from '@oldschoolgg/toolkit';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { activity_type_enum } from '@prisma/client';
 import {
 	type AttachmentBuilder,
@@ -11,6 +15,7 @@ import {
 import { Time, notEmpty, randArrItem, randInt, roll } from 'e';
 import { Bank } from 'oldschooljs';
 import { alching } from '../../mahoji/commands/laps';
+<<<<<<< HEAD
 =======
 import { Stopwatch, channelIsSendable, makeComponents } from '@oldschoolgg/toolkit';
 import type { activity_type_enum } from '@prisma/client';
@@ -18,6 +23,8 @@ import type { AttachmentBuilder, ButtonBuilder, MessageCollector, MessageCreateO
 import { Bank } from 'oldschooljs';
 
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { calculateBirdhouseDetails } from '../../mahoji/lib/abstracted_commands/birdhousesCommand';
 import { canRunAutoContract } from '../../mahoji/lib/abstracted_commands/farmingContractCommand';
 import { handleTriggerShootingStar } from '../../mahoji/lib/abstracted_commands/shootingStarsCommand';
@@ -140,9 +147,14 @@ const tripFinishEffects: TripFinishEffect[] = [
 				const otherLoot = new Bank().add(MysteryBoxes.roll());
 				const bonusLoot = new Bank().add(loot).add(otherLoot);
 				messages.push(`<:mysterybox:680783258488799277> **You received 2x loot and ${otherLoot}.**`);
-				userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot);
-				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-				updateBankSetting('trip_doubling_loot', bonusLoot);
+
+				await Promise.all([
+					userStatsBankUpdate(user.id, 'doubled_loot_bank', bonusLoot),
+					updateBankSetting('trip_doubling_loot', bonusLoot)
+				]);
+				return {
+					itemsToAddWithCL: bonusLoot
+				};
 			}
 		}
 	},
@@ -232,9 +244,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 				default: {
 				}
 			}
-			if (bonusLoot.length > 0) {
-				await user.addItemsToBank({ items: bonusLoot, collectionLog: true });
-			}
+
+			return {
+				itemsToAddWithCL: bonusLoot
+			};
 		}
 	},
 	{
@@ -255,15 +268,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						`Your Voidling couldn't do any alching because you don't own ${alchResult.bankToRemove}.`
 					);
 				}
-				await user.transactItems({
-					itemsToRemove: alchResult.bankToRemove,
-					itemsToAdd: alchResult.bankToAdd,
-					collectionLog: true
-				});
 
-				updateBankSetting('magic_cost_bank', alchResult.bankToRemove);
-
-				updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'));
+				await Promise.all([
+					updateBankSetting('magic_cost_bank', alchResult.bankToRemove),
+					updateClientGPTrackSetting('gp_alch', alchResult.bankToAdd.amount('Coins'))
+				]);
 				messages.push(
 					`<:Voidling:886284972380545034> ${alchResult.maxCasts}x ${
 						alchResult.itemToAlch.name
@@ -273,6 +282,10 @@ const tripFinishEffects: TripFinishEffect[] = [
 							: ''
 					}${user.hasEquipped('Magic master cape') ? '<:Magicmastercape:1115026341314703492>⏫' : ''}`
 				);
+				return {
+					itemsToAddWithCL: alchResult.bankToAdd,
+					itemsToRemove: alchResult.bankToRemove
+				};
 			} else if (user.favAlchs(Time.Minute * 30).length !== 0) {
 				messages.push(
 					"Your Voidling didn't alch anything because you either don't have any nature runes or fire runes."
@@ -294,11 +307,11 @@ const tripFinishEffects: TripFinishEffect[] = [
 						data.duration,
 						user.skillLevel(SkillsEnum.Agility)
 					);
-					userStatsUpdate(user.id, () => ({
+					await userStatsUpdate(user.id, {
 						silverhawk_boots_passive_xp: {
 							increment: xpToReceive
 						}
-					}));
+					});
 					await user.addXP({
 						skillName: SkillsEnum.Agility,
 						amount: xpToReceive,
@@ -312,7 +325,7 @@ const tripFinishEffects: TripFinishEffect[] = [
 	},
 	{
 		name: 'Message in a Bottle',
-		fn: async ({ data, messages, user }) => {
+		fn: async ({ data, messages }) => {
 			const underwaterTrips: activity_type_enum[] = [
 				activity_type_enum.UnderwaterAgilityThieving,
 				activity_type_enum.DepthsOfAtlantis
@@ -321,15 +334,20 @@ const tripFinishEffects: TripFinishEffect[] = [
 			if (!roll(500)) return;
 			messages.push('You found a message in a bottle!');
 			const bottleLoot = new Bank().add('Message in a bottle');
-			await user.addItemsToBank({ items: bottleLoot, collectionLog: true });
+			return {
+				itemsToAddWithCL: bottleLoot
+			};
 		}
 	},
 	{
 		name: 'Crate Spawns',
 		fn: async ({ data, messages, user }) => {
-			const crateRes = await handleCrateSpawns(user, data.duration);
-			if (crateRes !== null) {
-				messages.push(crateRes);
+			const crateRes = handleCrateSpawns(user, data.duration);
+			if (crateRes && crateRes.length > 0) {
+				messages.push(bold(`You found ${crateRes}!`));
+				return {
+					itemsToAddWithCL: crateRes
+				};
 			}
 		}
 	},
@@ -350,6 +368,9 @@ const tripFinishEffects: TripFinishEffect[] = [
 	{
 		name: 'Combat Achievements',
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 		fn: combatAchievementTripEffect
 	},
 	{
@@ -434,10 +455,12 @@ const tripFinishEffects: TripFinishEffect[] = [
 				charges: eggsReceived
 			});
 			if (chargeResult.didCharge) {
-				await user.addItemsToBank({ items: loot, collectionLog: true });
 				messages.push(
 					`You received ${loot}, your Rebirth portent has ${chargeResult.portent.charges_remaining}x charges remaining.`
 				);
+				return {
+					itemsToAddWithCL: loot
+				};
 			}
 		}
 	},
@@ -456,22 +479,25 @@ const tripFinishEffects: TripFinishEffect[] = [
 					console.error(`User ${user.id} doesn't ML ${cost.toString()}`);
 					return;
 				}
-				await user.transactItems({
-					itemsToRemove: cost,
-					itemsToAdd: loot,
-					collectionLog: true
-				});
 
 				if (cost.length > 0 && loot.length === 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}, but all died`);
 				} else if (loot.length > 0) {
 					messages.push(`<:moonlightMutator:1220590471613513780> Mutated ${cost}; ${loot} survived`);
 				}
+
+				return {
+					itemsToAddWithCL: loot,
+					itemsToRemove: cost
+				};
 			}
+<<<<<<< HEAD
 =======
 		fn: async options => {
 			return combatAchievementTripEffect(options);
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 		}
 	}
 ];
@@ -500,15 +526,19 @@ export async function handleTripFinish(
 	const messages: string[] = [];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// TODO: This is called for *every* trip, even though it's used only for users with the rebirth portent.
 	const portents = await getAllPortentCharges(user);
 	for (const effect of tripFinishEffects) await effect.fn({ data, user, loot, messages, portents });
 =======
+=======
+	const portents = await getAllPortentCharges(user);
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
 		const stopwatch = new Stopwatch().start();
-		const res = await effect.fn({ data, user, loot, messages });
+		const res = await effect.fn({ data, user, loot, messages, portents });
 		if (res?.itemsToAddWithCL) itemsToAddWithCL.add(res.itemsToAddWithCL);
 		if (res?.itemsToRemove) itemsToRemove.add(res.itemsToRemove);
 		stopwatch.stop();
@@ -519,7 +549,10 @@ export async function handleTripFinish(
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 

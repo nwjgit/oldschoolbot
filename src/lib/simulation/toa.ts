@@ -1268,6 +1268,9 @@ export async function toaStartCommand(
 				});
 			}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 			const isChincannonUser = u.id === chinCannonUser?.id;
 			if (isChincannonUser) {
@@ -1282,10 +1285,14 @@ export async function toaStartCommand(
 
 				debugStr += ` ${inventionBoosts.chincannon.toaPercentReduction}% speed increase from the Chincannon (${res.messages})`;
 			}
+<<<<<<< HEAD
 			await userStatsBankUpdate(u.id, 'toa_cost', realCost);
 =======
 			await userStatsBankUpdate(u, 'toa_cost', realCost);
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+			await userStatsBankUpdate(u, 'toa_cost', realCost);
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 			const effectiveCost = realCost.clone();
 			totalCost.add(effectiveCost);
 

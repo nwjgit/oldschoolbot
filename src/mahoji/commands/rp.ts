@@ -139,7 +139,7 @@ async function usernameSync() {
 function isProtectedAccount(user: MUser) {
 	const botAccounts = ['303730326692429825', '729244028989603850', '969542224058654790'];
 	if ([...ADMIN_IDS, ...OWNER_IDS, ...botAccounts].includes(user.id)) return true;
-	if ([BitField.isModerator, BitField.isContributor].some(bf => user.bitfield.includes(bf))) return true;
+	if ([BitField.isModerator].some(bf => user.bitfield.includes(bf))) return true;
 	return false;
 }
 
@@ -586,12 +586,8 @@ export const rpCommand: OSBMahojiCommand = {
 		const isOwner = OWNER_IDS.includes(userID.toString());
 		const isAdmin = ADMIN_IDS.includes(userID);
 		const isMod = isOwner || isAdmin || adminUser.bitfield.includes(BitField.isModerator);
-		const isContrib = isMod || adminUser.bitfield.includes(BitField.isContributor);
-		const isTrusted = [BitField.IsWikiContributor, BitField.isContributor].some(bit =>
-			adminUser.bitfield.includes(bit)
-		);
 		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		if (!isAdmin && !isMod && !isTrusted) return randArrItem(gifs);
+		if (!isAdmin && !isMod) return randArrItem(gifs);
 
 		if (options.user_event) {
 			const messageId =
@@ -646,16 +642,7 @@ Date: ${dateFm(date)}`;
 
 		if (!isMod) return randArrItem(gifs);
 
-		if (!guildID || !isContrib || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
-		// Contributor+ only commands:
-		if (options.player?.givetgb) {
-			const user = await mUserFetch(options.player?.givetgb.user.user.id);
-			if (user.id === adminUser.id) {
-				return randArrItem(gifs);
-			}
-			await user.addItemsToBank({ items: new Bank().add('Tester gift box'), collectionLog: true });
-			return `Gave 1x Tester gift box to ${user}.`;
-		}
+		if (!guildID || (production && guildID.toString() !== SupportServer)) return randArrItem(gifs);
 
 		if (!isMod) return randArrItem(gifs);
 		// Mod+ only commands:
@@ -857,6 +844,7 @@ ORDER BY item_id ASC;`);
 			return `${toTitleCase(actionMsgPast)} ${items.toString().slice(0, 500)} from ${userToStealFrom.mention}`;
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (options.player?.add_ironman_alt) {
 			const mainAccount = await mahojiUsersSettingsFetch(options.player.add_ironman_alt.main.user.id, {
 				minion_ironman: true,
@@ -912,6 +900,8 @@ ORDER BY item_id ASC;`);
 		}
 =======
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 		if (options.player?.view_user) {
 			const userToView = await mUserFetch(options.player.view_user.user.user.id);

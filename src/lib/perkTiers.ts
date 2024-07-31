@@ -14,11 +14,7 @@ export const allPerkBitfields: BitField[] = [
 ];
 
 export function getUsersPerkTier(user: MUser): PerkTier | 0 {
-	if (
-		[BitField.isContributor, BitField.isModerator, BitField.IsWikiContributor].some(bit =>
-			user.bitfield.includes(bit)
-		)
-	) {
+	if ([BitField.isModerator].some(bit => user.bitfield.includes(bit))) {
 		return PerkTier.Four;
 	}
 
@@ -38,7 +34,7 @@ export function getUsersPerkTier(user: MUser): PerkTier | 0 {
 	}
 
 	if (user.bitfield.includes(BitField.IsPatronTier2) || user.bitfield.includes(BitField.HasPermanentTierOne)) {
-		elligibleTiers.push(PerkTier.One);
+		elligibleTiers.push(PerkTier.Three);
 	}
 
 	const roboChimpCached = roboChimpCache.get(user.id);

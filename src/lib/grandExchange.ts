@@ -8,6 +8,7 @@ import type { Item, ItemBank } from 'oldschooljs/dist/meta/types';
 import PQueue from 'p-queue';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { BLACKLISTED_USERS } from './blacklists';
 import { BitField, ONE_TRILLION, globalConfig } from './constants';
 import { isCustomItem } from './customItems/util';
@@ -15,15 +16,24 @@ import { isCustomItem } from './customItems/util';
 import { ADMIN_IDS, OWNER_IDS, production } from '../config';
 import { BitField, ONE_TRILLION, PerkTier, globalConfig } from './constants';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { BLACKLISTED_USERS } from './blacklists';
+import { BitField, ONE_TRILLION, globalConfig } from './constants';
+import { isCustomItem } from './customItems/util';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { marketPricemap } from './marketPrices';
 import type { RobochimpUser } from './roboChimp';
 import { roboChimpUserFetch } from './roboChimp';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ADMIN_IDS, OWNER_IDS } from '../config';
 =======
 import { BLACKLISTED_USERS } from './blacklists';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { ADMIN_IDS, OWNER_IDS } from '../config';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { fetchTableBank, makeTransactFromTableBankQueries } from './tableBank';
 import {
 	assert,
@@ -253,6 +263,7 @@ class GrandExchangeSingleton {
 
 	async lockGE(reason: string) {
 		if (this.locked) return;
+		debugLog(`The Grand Exchange has encountered an error and has been locked. Reason: ${reason}`);
 		const idsToNotify = [...ADMIN_IDS, ...OWNER_IDS];
 		await sendToChannelID(globalConfig.geAdminChannelID, {
 			content: `The Grand Exchange has encountered an error and has been locked. Reason: ${reason}. ${idsToNotify

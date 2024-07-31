@@ -445,10 +445,14 @@ export async function interactionHook(interaction: Interaction) {
 
 	if (id.includes('GIVEAWAY_')) return giveawayButtonHandler(user, id, interaction);
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (id.includes('REPEAT_TRIP')) return repeatTripHandler(user, interaction);
 	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
 =======
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+	if (id.includes('DONATE_IC')) return donateICHandler(interaction);
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	if (id.startsWith('GPE_')) return handleGearPresetEquip(user, id, interaction);
 	if (id.startsWith('PTR_')) return handlePinnedTripRepeat(user, id, interaction);
 	if (id === 'TOA_CHECK') {

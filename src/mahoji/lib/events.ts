@@ -5,10 +5,15 @@ import { ActivityType, bold, time } from 'discord.js';
 import { Channel, META_CONSTANTS, globalConfig } from '../../lib/constants';
 import { initCrons } from '../../lib/crons';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { syncDoubleLoot } from '../../lib/doubleLoot';
 
 =======
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { syncDoubleLoot } from '../../lib/doubleLoot';
+
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { initTickers } from '../../lib/tickers';
 import { logWrapFn } from '../../lib/util';
 import { mahojiClientSettingsFetch } from '../../lib/util/clientSettings';
@@ -78,6 +83,7 @@ export async function syncCustomPrices() {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export async function onStartup() {
 	globalClient.application.commands.fetch({ guildId: production ? undefined : globalConfig.testingServerID });
 	if (!production) {
@@ -93,6 +99,8 @@ export async function onStartup() {
 
 	cacheCleanup();
 =======
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 export const onStartup = logWrapFn('onStartup', async () => {
 	const syncTestBotCommands = globalConfig.isProduction
 		? null
@@ -101,6 +109,7 @@ export const onStartup = logWrapFn('onStartup', async () => {
 				commands: Array.from(globalClient.mahojiClient.commands.values()),
 				guildID: globalConfig.testingServerID
 			});
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
 
 	initCrons();
@@ -113,12 +122,24 @@ export const onStartup = logWrapFn('onStartup', async () => {
 		sendToChannelID(Channel.GeneralChannel, {
 			content: `I have just turned on!
 =======
+=======
+
+	await syncDoubleLoot();
+
+	initCrons();
+	initTickers();
+	syncSlayerMaskLeaderboardCache();
+
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	const sendStartupMessage = globalConfig.isProduction
 		? sendToChannelID(Channel.GeneralChannel, {
 				content: `I have just turned on!\n\n${META_CONSTANTS.RENDERED_STR}`
 			}).catch(console.error)
 		: null;
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 	await Promise.all([
 		globalClient.application.commands.fetch({

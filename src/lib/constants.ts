@@ -227,7 +227,6 @@ export enum BitField {
 	IsPatronTier4 = 5,
 	IsPatronTier5 = 6,
 	isModerator = 7,
-	isContributor = 8,
 	BypassAgeRestriction = 9,
 	HasHosidiusWallkit = 10,
 	HasPermanentEventBackgrounds = 11,
@@ -238,7 +237,6 @@ export enum BitField {
 	HasDexScroll = 16,
 	HasArcaneScroll = 17,
 	HasTornPrayerScroll = 18,
-	IsWikiContributor = 19,
 	HasSlepeyTablet = 20,
 	IsPatronTier6 = 21,
 	DisableBirdhouseRunButton = 22,
@@ -308,9 +306,7 @@ interface BitFieldData {
 }
 
 export const BitFieldData: Record<BitField, BitFieldData> = {
-	[BitField.IsWikiContributor]: { name: 'Wiki Contributor', protected: true, userConfigurable: false },
 	[BitField.isModerator]: { name: 'Moderator', protected: true, userConfigurable: false },
-	[BitField.isContributor]: { name: 'Contributor', protected: true, userConfigurable: false },
 
 	[BitField.HasPermanentTierOne]: { name: 'Permanent Tier 1', protected: false, userConfigurable: false },
 	[BitField.HasPermanentSpawnLamp]: { name: 'Permanent Spawn Lamp', protected: false, userConfigurable: false },
@@ -750,8 +746,6 @@ export const chompyHats = [
 	[getItemOrThrow('Chompy bird hat (expert ogre dragon archer)'), 3000],
 	[getItemOrThrow('Chompy bird hat (expert dragon archer)'), 4000]
 ] as const;
-
-export const secretItems: number[] = resolveItems([]);
 
 export const toaPurpleItems = resolveItems([
 	"Tumeken's guardian",

@@ -13,20 +13,27 @@ import type { Rune } from '../lib/skilling/skills/runecraft';
 import { hasGracefulEquipped } from '../lib/structures/Gear';
 import type { ItemBank } from '../lib/types';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { anglerBoosts, formatItemReqs, hasSkillReqs, itemNameFromID, readableStatName } from '../lib/util';
 import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
 import resolveItems from '../lib/util/resolveItems';
 =======
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import {
 	type JsonKeys,
 	anglerBoosts,
 	formatItemReqs,
 	hasSkillReqs,
 	itemNameFromID,
-	readableStatName,
-	resolveItems
+	readableStatName
 } from '../lib/util';
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { mahojiClientSettingsFetch, mahojiClientSettingsUpdate } from '../lib/util/clientSettings';
+import resolveItems from '../lib/util/resolveItems';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 export function mahojiParseNumber({
 	input,
@@ -79,6 +86,9 @@ export function getMahojiBank(user: { bank: Prisma.JsonValue }) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 export async function trackClientBankStats(
 	key: 'clue_upgrader_loot' | 'portable_tanner_loot' | 'turaels_trials_cost_bank' | 'turaels_trials_loot_bank',
 	newItems: Bank
@@ -87,7 +97,12 @@ export async function trackClientBankStats(
 	await mahojiClientSettingsUpdate({
 		[key]: new Bank(currentTrackedLoot[key] as ItemBank).add(newItems).bank
 	});
+<<<<<<< HEAD
 =======
+=======
+}
+
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
 	userID: string,
 	selectKeys: T
@@ -105,7 +120,10 @@ export async function fetchUserStats<T extends Prisma.UserStatsSelect>(
 	});
 
 	return result as unknown as SelectedUserStats<T>;
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 }
 
 export async function userStatsUpdate<T extends Prisma.UserStatsSelect = Prisma.UserStatsSelect>(

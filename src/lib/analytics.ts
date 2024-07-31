@@ -77,7 +77,12 @@ export async function analyticsTick() {
 			gp_sell: true,
 			gp_slots: true,
 			gp_tax_balance: true,
+<<<<<<< HEAD
 			economyStats_dailiesAmount: true
+=======
+			economyStats_dailiesAmount: true,
+			gp_ic: true
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 		},
 		create: {
 			id: globalConfig.clientID

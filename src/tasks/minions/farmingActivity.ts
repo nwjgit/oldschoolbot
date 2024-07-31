@@ -561,6 +561,9 @@ export const farmingTask: MinionTask = {
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 			await farmingLootBoosts(user, 'harvest', plantToHarvest, patchType.lastQuantity, loot, infoStr);
 			if ('onHarvest' in plantToHarvest && plantToHarvest.onHarvest) {
 				await plantToHarvest.onHarvest({ user, loot, quantity: patchType.lastQuantity, messages: infoStr });
@@ -618,9 +621,12 @@ export const farmingTask: MinionTask = {
 			}
 
 			updateBankSetting('farming_loot_bank', loot);
+<<<<<<< HEAD
 =======
 			await updateBankSetting('farming_loot_bank', loot);
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 			await transactItems({
 				userID: user.id,
 				collectionLog: true,

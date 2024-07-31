@@ -4,6 +4,7 @@ import { globalConfig } from './constants';
 const startupScripts: { sql: string; ignoreErrors?: true }[] = [];
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const arrayColumns = [
 	['clientStorage', 'userBlacklist'],
 	['clientStorage', 'guildBlacklist'],
@@ -26,21 +27,67 @@ const arrayColumns = [
 	['users', 'disabled_inventions'],
 	['users', 'unlocked_gear_templates']
 ];
+=======
+startupScripts.push({
+	sql: `CREATE OR REPLACE FUNCTION add_item_to_bank(
+    bank JSONB,
+    key TEXT,
+    quantity INT
+) RETURNS JSONB LANGUAGE plpgsql AS $$
+BEGIN
+    RETURN (
+        CASE
+            WHEN bank ? key THEN
+                jsonb_set(
+                    bank,
+                    ARRAY[key],
+                    to_jsonb((bank->>key)::INT + quantity)
+                )
+            ELSE
+                jsonb_set(
+                    bank,
+                    ARRAY[key],
+                    to_jsonb(quantity)
+                )
+        END
+    );
+END;
+$$;`
+});
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
-for (const [table, column] of arrayColumns) {
-	startupScripts.push({
-		sql: `UPDATE "${table}" SET "${column}" = '{}' WHERE "${column}" IS NULL;`
-	});
-	startupScripts.push({
-		sql: `
-ALTER TABLE "${table}"
-	ALTER COLUMN "${column}" SET DEFAULT '{}',
-	ALTER COLUMN "${column}" SET NOT NULL;`
-	});
-}
+startupScripts.push({
+	sql: `CREATE OR REPLACE FUNCTION remove_item_from_bank(
+    bank JSONB,
+    key TEXT,
+    quantity INT
+) RETURNS JSONB LANGUAGE plpgsql AS $$
+DECLARE
+    current_value INT;
+BEGIN
+    IF bank ? key THEN
+        current_value := (bank->>key)::INT - quantity;
+        IF current_value > 0 THEN
+            RETURN jsonb_set(
+                bank,
+                ARRAY[key],
+                to_jsonb(current_value)
+            );
+        ELSE
+            RETURN bank - key;
+        END IF;
+    ELSE
+        RETURN bank;
+    END IF;
+END;
+$$;`
+});
 
+<<<<<<< HEAD
 =======
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 interface CheckConstraint {
 	table: string;
 	column: string;

@@ -8,7 +8,6 @@ import {
 	type CollectorFilter,
 	type Guild,
 	type InteractionReplyOptions,
-	InteractionType,
 	type Message,
 	type MessageEditOptions,
 	type SelectMenuInteraction,
@@ -22,10 +21,14 @@ import { Bank, Items, Monsters } from 'oldschooljs';
 import { bool, integer, nativeMath, nodeCrypto, real } from 'random-js';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import type { PrismaClient } from '@prisma/client';
 =======
 import type { Prisma } from '@prisma/client';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import type { Prisma, PrismaClient } from '@prisma/client';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { LRUCache } from 'lru-cache';
 import type { Item } from 'oldschooljs/dist/meta/types';
 import type Monster from 'oldschooljs/dist/structures/Monster';
@@ -34,12 +37,18 @@ import { ADMIN_IDS, OWNER_IDS, SupportServer } from '../config';
 import type { MUserClass } from './MUser';
 import { PaginatedMessage } from './PaginatedMessage';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { ClueTiers } from './clues/clueTiers';
 import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
 import { doaCL } from './data/CollectionsExport';
 =======
 import { BitField, globalConfig, projectiles } from './constants';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { ClueTiers } from './clues/clueTiers';
+import { BitField, ONE_TRILLION, type ProjectileType, globalConfig, projectiles } from './constants';
+import { doaCL } from './data/CollectionsExport';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { getSimilarItems } from './data/similarItems';
 import type { DefenceGearStat, GearSetupType, OffenceGearStat } from './gear/types';
 import { GearSetupTypes, GearStat } from './gear/types';
@@ -59,9 +68,13 @@ import getOSItem, { getItem } from './util/getOSItem';
 import itemID from './util/itemID';
 import { makeBadgeString } from './util/makeBadgeString';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import resolveItems from './util/resolveItems';
 =======
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import resolveItems from './util/resolveItems';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { itemNameFromID } from './util/smallUtils';
 
 export * from '@oldschoolgg/toolkit';
@@ -588,25 +601,6 @@ export function logWrapFn<T extends (...args: any[]) => Promise<unknown>>(
 	fn: T
 ): (...args: Parameters<T>) => ReturnType<T> {
 	return (...args: Parameters<T>): ReturnType<T> => runTimedLoggedFn(name, () => fn(...args)) as ReturnType<T>;
-}
-
-export function getAllIDsOfUser(user: MUser) {
-	const main = user.user.main_account;
-	const allAccounts: string[] = [...user.user.ironman_alts, user.id];
-	if (main) {
-		allAccounts.push(main);
-	}
-	return allAccounts;
-}
-
-export function getInteractionTypeName(type: InteractionType) {
-	return {
-		[InteractionType.Ping]: 'Ping',
-		[InteractionType.ApplicationCommand]: 'ApplicationCommand',
-		[InteractionType.MessageComponent]: 'MessageComponent',
-		[InteractionType.ApplicationCommandAutocomplete]: 'ApplicationCommandAutocomplete',
-		[InteractionType.ModalSubmit]: 'ModalSubmit'
-	}[type];
 }
 
 export function isModOrAdmin(user: MUser) {

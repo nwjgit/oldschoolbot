@@ -10,6 +10,11 @@ import { GrandExchange, createGECancelButton } from '../../lib/grandExchange';
 import { marketPricemap } from '../../lib/marketPrices';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import { Bank } from 'oldschooljs';
+import type { ItemBank } from 'oldschooljs/dist/meta/types';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import {
 	formatDuration,
 	isGEUntradeable,
@@ -18,11 +23,14 @@ import {
 	returnStringOrFile,
 	toKMB
 } from '../../lib/util';
+<<<<<<< HEAD
 =======
 import { Bank } from 'oldschooljs';
 import type { ItemBank } from 'oldschooljs/dist/meta/types';
 import { formatDuration, itemNameFromID, makeComponents, returnStringOrFile, toKMB } from '../../lib/util';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { createChart } from '../../lib/util/chart';
 import getOSItem, { getItem } from '../../lib/util/getOSItem';
 import { handleMahojiConfirmation } from '../../lib/util/handleMahojiConfirmation';
@@ -149,14 +157,20 @@ export const geCommand: OSBMahojiCommand = {
 					required: true,
 					autocomplete: async (value, { id }) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 						const user = await mUserFetch(id);
 						return user.bank
 =======
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 						const raw = await mahojiUsersSettingsFetch(id, { bank: true });
 						const bank = new Bank(raw.bank as ItemBank);
 
 						return bank
+<<<<<<< HEAD
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 							.items()
 							.filter(i => !isGEUntradeable(i[0].id))
 							.filter(i => (!value ? true : i[0].name.toLowerCase().includes(value.toLowerCase())))

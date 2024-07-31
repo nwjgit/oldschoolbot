@@ -215,15 +215,22 @@ export async function triggerRandomEvent(user: MUser, type: activity_type_enum, 
 	}
 	loot.add(event.loot.roll());
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	if (roll(150)) {
 		loot.add('Balloon cat');
 		messages.push('Found a cute Balloon cat!');
 	}
+<<<<<<< HEAD
 	await transactItems({ userID: user.id, itemsToAdd: loot, collectionLog: true });
 	await userStatsBankUpdate(user.id, 'random_event_completions_bank', new Bank().add(event.id));
 =======
 	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+	await userStatsBankUpdate(user, 'random_event_completions_bank', new Bank().add(event.id));
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	messages.push(`Did ${event.name} random event and got ${loot}`);
 	return {
 		itemsToAddWithCL: loot

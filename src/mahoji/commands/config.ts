@@ -11,7 +11,7 @@ import type { ItemBank } from 'oldschooljs/dist/meta/types';
 
 import { production } from '../../config';
 import { mahojiUserSettingsUpdate } from '../../lib/MUser';
-import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier, secretItems } from '../../lib/constants';
+import { BitField, ItemIconPacks, ParsedCustomEmojiWithGroups, PerkTier } from '../../lib/constants';
 import { Eatables } from '../../lib/data/eatables';
 import { gearImages } from '../../lib/gear/functions/generateGearImage';
 import { Inventions } from '../../lib/invention/inventions';
@@ -206,7 +206,7 @@ async function favFoodConfig(
 	const currentItems = `Your current favorite food is: ${
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ')
 	}.`;
-	if (!item || secretItems.includes(item.id)) return currentItems;
+	if (!item || item.customItemData?.isSecret) return currentItems;
 	if (!Eatables.some(i => i.id === item.id || i.raw === item.id)) return "That's not a valid item.";
 
 	if (itemToAdd) {
@@ -238,11 +238,15 @@ async function favItemConfig(
 		currentFavorites.length === 0 ? 'None' : currentFavorites.map(itemNameFromID).join(', ').slice(0, 1500)
 	}.`;
 <<<<<<< HEAD
+<<<<<<< HEAD
 	if (!item || secretItems.includes(item.id)) return currentItems;
 =======
 
 	if (!item) return currentItems;
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+	if (!item || item.customItemData?.isSecret) return currentItems;
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	if (itemToAdd) {
 		const limit = (user.perkTier() + 1) * 100;
 		if (currentFavorites.length >= limit) {
@@ -637,6 +641,7 @@ export async function pinTripCommand(
 ) {
 	if (!tripId) return 'Invalid trip.';
 	const id = Number(tripId);
+	if (!id || Number.isNaN(id)) return 'Invalid trip.';
 	const trip = await prisma.activity.findFirst({ where: { id, user_id: BigInt(user.id) } });
 	if (!trip) return 'Invalid trip.';
 
@@ -1102,7 +1107,7 @@ export const configCommand: OSBMahojiCommand = {
 								>(`
 SELECT DISTINCT ON (activity.type) activity.type, activity.data, activity.id, activity.finish_date
 FROM activity
-WHERE finish_date::date > now() - INTERVAL '31 days'
+WHERE finish_date > now() - INTERVAL '14 days'
 AND user_id = '${user.id}'::bigint
 ORDER BY activity.type, finish_date DESC
 LIMIT 20;

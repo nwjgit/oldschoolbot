@@ -125,6 +125,9 @@ export const tobTask: MinionTask = {
 
 			// Track loot for T3+ patrons
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 			if (!chincannonUser) {
 				await Promise.all(
 					allUsers.map(user => {
@@ -132,6 +135,7 @@ export const tobTask: MinionTask = {
 					})
 				);
 			}
+<<<<<<< HEAD
 =======
 			await Promise.all(
 				allUsers.map(user => {
@@ -139,6 +143,8 @@ export const tobTask: MinionTask = {
 				})
 			);
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 
 			for (const [userID, _userLoot] of Object.entries(result.loot)) {
 				if (data.solo && userID !== leader) continue;

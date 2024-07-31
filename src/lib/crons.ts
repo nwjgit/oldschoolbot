@@ -1,6 +1,10 @@
 import { schedule } from 'node-cron';
 
 import { analyticsTick } from './analytics';
+<<<<<<< HEAD
+=======
+import { syncPrescence } from './doubleLoot';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { cacheGEPrices } from './marketPrices';
 import { cacheCleanup } from './util/cachedUserIDs';
 import { syncSlayerMaskLeaderboardCache } from './util/slayerMaskLeaderboard';
@@ -41,6 +45,13 @@ GROUP BY item_id;`);
 		cacheCleanup();
 	});
 
+<<<<<<< HEAD
+=======
+	schedule('0 0 * * *', async () => {
+		syncSlayerMaskLeaderboardCache();
+	});
+
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 	schedule('35 */48 * * *', async () => {
 		debugLog('cacheGEPrices cronjob starting');
 		await cacheGEPrices();

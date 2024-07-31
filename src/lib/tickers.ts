@@ -9,7 +9,6 @@ import { userStatsUpdate } from '../mahoji/mahojiSettings';
 import { runTameTask } from '../tasks/tames/tameTasks';
 import { mahojiUserSettingsUpdate } from './MUser';
 import { processPendingActivities } from './Task';
-import { bossEvents, startBossEvent } from './bossEvents';
 import { BitField, Channel, PeakTier, informationalButtons } from './constants';
 import { GrandExchange } from './grandExchange';
 import { collectMetrics } from './metrics';
@@ -17,6 +16,7 @@ import { queryCountStore } from './settings/prisma';
 import { runCommand } from './settings/settings';
 import { getFarmingInfo } from './skilling/functions/getFarmingInfo';
 import Farming from './skilling/skills/farming';
+import { MTame } from './structures/MTame';
 import { awaitMessageComponentInteraction, getSupportGuild, makeComponents, stringMatches } from './util';
 import { farmingPatchNames, getFarmingKeyFromName } from './util/farmingHelpers';
 import { handleGiveawayCompletion } from './util/giveaway';
@@ -204,7 +204,6 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 							BitField.IsPatronTier4,
 							BitField.IsPatronTier5,
 							BitField.IsPatronTier6,
-							BitField.isContributor,
 							BitField.isModerator
 						]
 					}
@@ -334,11 +333,16 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 	},
 	{
 <<<<<<< HEAD
+<<<<<<< HEAD
 		name: 'tame_activities',
 =======
 		name: 'ge_channel_messages',
 		startupWait: Time.Second * 19,
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+		name: 'tame_activities',
+		startupWait: Time.Second * 15,
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 		timer: null,
 		interval: Time.Second * 5,
 		cb: async () => {
@@ -353,7 +357,8 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 				},
 				include: {
 					tame: true
-				}
+				},
+				take: 5
 			});
 
 			await prisma.tameActivity.updateMany({
@@ -368,35 +373,7 @@ WHERE bitfield && '{2,3,4,5,6,7,8,12,21,24}'::int[] AND user_stats."last_daily_t
 			});
 
 			for (const task of tameTasks) {
-				runTameTask(task, task.tame);
-			}
-		}
-	},
-
-	{
-		name: 'pumpkinhead',
-		timer: null,
-		interval: Time.Hour * 5,
-		cb: async () => {
-			const mass = await prisma.bossEvent.findFirst({
-				where: {
-					start_date: { lt: new Date() },
-					completed: false
-				}
-			});
-			if (mass) {
-				startBossEvent({ boss: bossEvents.find(b => b.id === mass.boss_id)!, id: mass.id });
-
-				prisma.bossEvent
-					.update({
-						where: {
-							id: mass.id
-						},
-						data: {
-							completed: true
-						}
-					})
-					.catch(noOp);
+				await runTameTask(task, new MTame(task.tame));
 			}
 		}
 	},

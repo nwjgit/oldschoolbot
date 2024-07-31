@@ -1,10 +1,15 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { PerkTier } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel, User } from 'discord.js';
 =======
 import { PerkTier, formatDuration } from '@oldschoolgg/toolkit';
 import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { PerkTier } from '@oldschoolgg/toolkit';
+import type { DMChannel, Guild, GuildMember, InteractionReplyOptions, TextChannel } from 'discord.js';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { ComponentType, PermissionsBitField } from 'discord.js';
 
 import { OWNER_IDS, SupportServer } from '../../config';
@@ -157,8 +162,7 @@ const inhibitors: Inhibitor[] = [
 
 			// Allow contributors + moderators to use disabled channels in SupportServer
 			const userBitfield = user.bitfield;
-			const isStaff =
-				userBitfield.includes(BitField.isModerator) || userBitfield.includes(BitField.isContributor);
+			const isStaff = userBitfield.includes(BitField.isModerator);
 			if (guild.id === SupportServer && isStaff) {
 				return false;
 			}

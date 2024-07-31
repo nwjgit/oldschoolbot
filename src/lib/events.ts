@@ -5,6 +5,7 @@ import { ButtonBuilder, ButtonStyle, EmbedBuilder, bold, time } from 'discord.js
 import { Time, isFunction } from 'e';
 import { Items } from 'oldschooljs';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { Cooldowns } from '../mahoji/lib/Cooldowns';
 =======
 
@@ -12,12 +13,17 @@ import { command_name_enum } from '@prisma/client';
 import { SupportServer, production } from '../config';
 import { untrustedGuildSettingsCache } from '../mahoji/guildSettings';
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+import { Cooldowns } from '../mahoji/lib/Cooldowns';
+
+import { command_name_enum } from '@prisma/client';
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 import { minionStatusCommand } from '../mahoji/lib/abstracted_commands/minionStatusCommand';
 import { giveBoxResetTime, itemContractResetTime, spawnLampResetTime } from './MUser';
 import { boxSpawnHandler } from './boxSpawns';
 import { getGuthixianCacheInterval, userHasDoneCurrentGuthixianCache } from './bso/guthixianCache';
 import { IronmanPMBTable, itemSearchMbTable } from './bsoOpenables';
-import { BitField, Emoji, globalConfig, secretItems } from './constants';
+import { BitField, Emoji, globalConfig } from './constants';
 import { customItems } from './customItems/util';
 import { DOUBLE_LOOT_FINISH_TIME_CACHE, isDoubleLootActive } from './doubleLoot';
 
@@ -28,6 +34,7 @@ import { logError } from './util/logError';
 import { makeBankImage } from './util/makeBankImage';
 import { minionStatsEmbed } from './util/minionStatsEmbed';
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 const rareRolesSrc: [string, number, string][] = [
@@ -126,6 +133,8 @@ Type \`/tools user mypets\` to see your pets.`);
 }
 
 >>>>>>> d0e19ec01523e9e568fccf3bca3652f770df03e2
+=======
+>>>>>>> 63e3e808e6509fa2b31e85c1489acc044d9454e6
 const mentionText = `<@${globalConfig.clientID}>`;
 const mentionRegex = new RegExp(`^(\\s*<@&?[0-9]+>)*\\s*<@${globalConfig.clientID}>\\s*(<@&?[0-9]+>\\s*)*$`);
 
@@ -237,7 +246,7 @@ const mentionCommands: MentionCommand[] = [
 			const items = Items.filter(
 				i =>
 					[i.id.toString(), i.name.toLowerCase()].includes(content.toLowerCase()) &&
-					!secretItems.includes(i.id)
+					!i.customItemData?.isSecret
 			).array();
 			if (items.length === 0) return msg.reply('No results for that item.');
 
