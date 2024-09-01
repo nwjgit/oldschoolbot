@@ -35,10 +35,10 @@ async function transactItemsFromBank({
 }: TransactItemsArgs) {
 	let itemsToAdd = options.itemsToAdd ? options.itemsToAdd.clone() : undefined;
 	const itemsToRemove = options.itemsToRemove ? options.itemsToRemove.clone() : undefined;
-
+	console.log('INSIDE transactItemsFromBank 1');
 	return userQueueFn(userID, async function transactItemsInner() {
 		const settings = await mUserFetch(userID);
-
+		console.log('INSIDE transactItemsFromBank 2');
 		const gpToRemove = (itemsToRemove?.amount('Coins') ?? 0) - (itemsToAdd?.amount('Coins') ?? 0);
 		if (itemsToRemove && settings.GP < gpToRemove) {
 			const errObj = new Error(
@@ -55,7 +55,7 @@ async function transactItemsFromBank({
 		}
 		const currentBank = new Bank(settings.user.bank as ItemBank);
 		const previousCL = new Bank(settings.user.collectionLogBank as ItemBank);
-
+		console.log('INSIDE transactItemsFromBank 3');
 		let clUpdates: Prisma.UserUpdateArgs['data'] = {};
 		if (itemsToAdd) {
 			itemsToAdd = deduplicateClueScrolls({
@@ -69,7 +69,7 @@ async function transactItemsFromBank({
 
 			clUpdates = collectionLog ? settings.calculateAddItemsToCLUpdates({ items: clLoot, dontAddToTempCL }) : {};
 		}
-
+		console.log('INSIDE transactItemsFromBank 4');
 		let gpUpdate: { increment: number } | undefined = undefined;
 		if (itemsToAdd) {
 			const coinsInLoot = itemsToAdd.amount('Coins');
@@ -80,10 +80,10 @@ async function transactItemsFromBank({
 				itemsToAdd.remove('Coins', itemsToAdd.amount('Coins'));
 			}
 		}
-
+		console.log('INSIDE transactItemsFromBank 5');
 		const newBank = new Bank(currentBank);
 		if (itemsToAdd) newBank.add(itemsToAdd);
-
+		console.log('INSIDE transactItemsFromBank 6');
 		if (itemsToRemove) {
 			if (itemsToRemove.has('Coins')) {
 				if (!gpUpdate) {
@@ -112,26 +112,26 @@ async function transactItemsFromBank({
 			}
 			newBank.remove(itemsToRemove);
 		}
-
+		console.log('INSIDE transactItemsFromBank 7');
 		const { newUser } = await mahojiUserSettingsUpdate(userID, {
 			bank: newBank.bank,
 			GP: gpUpdate,
 			...clUpdates,
 			...options.otherUpdates
 		});
-
+		console.log('INSIDE transactItemsFromBank 8');
 		const itemsAdded = new Bank(itemsToAdd);
 		if (itemsAdded && gpUpdate && gpUpdate.increment > 0) {
 			itemsAdded.add('Coins', gpUpdate.increment);
 		}
-
+		console.log('INSIDE transactItemsFromBank 9');
 		const itemsRemoved = new Bank(itemsToRemove);
 		if (itemsRemoved && gpUpdate && gpUpdate.increment < 0) {
 			itemsRemoved.add('Coins', gpUpdate.increment);
 		}
-
+		console.log('INSIDE transactItemsFromBank 10');
 		const newCL = new Bank(newUser.collectionLogBank as ItemBank);
-
+		console.log('INSIDE transactItemsFromBank 11');
 		if (!dontAddToTempCL && collectionLog) {
 			const activeBingos = await findBingosWithUserParticipating(userID);
 			for (const bingo of activeBingos) {
@@ -140,11 +140,11 @@ async function transactItemsFromBank({
 				}
 			}
 		}
-
+		console.log('INSIDE transactItemsFromBank12');
 		if (!options.neverUpdateHistory) {
 			await handleNewCLItems({ itemsAdded, user: settings, previousCL, newCL });
 		}
-
+		console.log('INSIDE transactItemsFromBank 13');
 		return {
 			previousCL,
 			itemsAdded,

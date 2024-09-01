@@ -13,12 +13,13 @@ export const championsChallengeTask: MinionTask = {
 
 		const loot = new Bank({ "Champion's cape": 1 });
 
+		console.log('HELLO AM HERE 1');
 		await transactItems({
 			userID: user.id,
 			collectionLog: true,
 			itemsToAdd: loot
 		});
-
+		console.log('HELLO AM HERE 2');
 		handleTripFinish(
 			user,
 			channelID,

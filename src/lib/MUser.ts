@@ -356,9 +356,13 @@ GROUP BY data->>'ci';`);
 	}
 
 	async transactItems(options: Omit<TransactItemsArgs, 'userID'>) {
+		console.log('AM HERE IN TRANSACT ITEMS 1');
 		const res = await transactItems({ userID: this.user.id, ...options });
+		console.log('AM HERE IN TRANSACT ITEMS 2');
 		this.user = res.newUser;
+		console.log('AM HERE IN TRANSACT ITEMS 3');
 		this.updateProperties();
+		console.log('AM HERE IN TRANSACT ITEMS 4');
 		return res;
 	}
 

@@ -26,28 +26,28 @@ export async function fetchMultipleCLLeaderboards(
 			userEventMap
 		};
 	});
+	console.log("INSIDE fetchMultipleCLLeaderboards 1");
 
 	const results = await prisma.$transaction([
 		...parsedLeaderboards.map(({ items, userEventMap, ironmenOnly, resultLimit }) => {
 			const SQL_ITEMS = `ARRAY[${items.map(i => `${i}`).join(', ')}]`;
 			const userIds = Array.from(userEventMap.keys());
 			const userIdsList = userIds.length > 0 ? userIds.map(i => `'${i}'`).join(', ') : 'NULL';
-
-			const query = `
-SELECT id, qty
-FROM (
-    	SELECT id, CARDINALITY(cl_array & ${SQL_ITEMS}) AS qty
-    	FROM users
-    	WHERE (cl_array && ${SQL_ITEMS}
-		${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}) ${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
-	) AS subquery
+			console.log("INSIDE fetchMultipleCLLeaderboards 1.5");
+const query = `
+SELECT id, array_length(array(SELECT unnest(cl_array) INTERSECT SELECT unnest(${SQL_ITEMS})), 1) AS qty
+FROM users
+WHERE cl_array && ${SQL_ITEMS}
+${ironmenOnly ? 'AND "users"."minion.ironman" = true' : ''}
+${userIds.length > 0 ? `OR id IN (${userIdsList})` : ''}
 ORDER BY qty DESC
 LIMIT ${resultLimit};
 `;
+			console.log("INSIDE fetchMultipleCLLeaderboards 1.8");
 			return prisma.$queryRawUnsafe<{ id: string; qty: number }[]>(query);
 		})
 	]);
-
+	console.log("INSIDE fetchMultipleCLLeaderboards 2");
 	return results.map((res, index) => {
 		const src = parsedLeaderboards[index];
 

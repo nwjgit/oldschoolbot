@@ -41,31 +41,32 @@ export async function handleNewCLItems({
 	newCL: Bank;
 	itemsAdded: Bank;
 }) {
+	console.log('INSIDE handleNewCLItems 1');
 	const newCLItems = itemsAdded
 		?.clone()
 		.filter(i => !previousCL.has(i.id) && newCL.has(i.id) && allCLItems.includes(i.id));
-
+	console.log('INSIDE handleNewCLItems 2');
 	const didGetNewCLItem = newCLItems && newCLItems.length > 0;
 	if (didGetNewCLItem || roll(30)) {
 		await prisma.historicalData.create({ data: await createHistoricalData(user) });
 	}
-
+	console.log('INSIDE handleNewCLItems 3');
 	if (didGetNewCLItem) {
 		await prisma.$queryRawUnsafe(RawSQL.updateCLArray(user.id));
 	}
-
+	console.log('INSIDE handleNewCLItems 4');
 	if (!didGetNewCLItem) return;
-
+	console.log('INSIDE handleNewCLItems 5');
 	const previousCLDetails = calcCLDetails(previousCL);
 	const previousCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
-
+	console.log('INSIDE handleNewCLItems 6');
 	await roboChimpSyncData(user, newCL);
 	const newCLRank = previousCLDetails.percent >= 80 ? await calculateOwnCLRanking(user.id) : null;
-
+	console.log('INSIDE handleNewCLItems 7');
 	const newCLDetails = calcCLDetails(newCL);
-
+	console.log('INSIDE handleNewCLItems 8');
 	let newCLPercentMessage: string | null = null;
-
+	console.log('INSIDE handleNewCLItems 9');
 	const milestonePercentages = [25, 50, 70, 80, 90, 95, 100];
 	for (const milestone of milestonePercentages) {
 		if (previousCLDetails.percent < milestone && newCLDetails.percent >= milestone) {
@@ -77,26 +78,27 @@ export async function handleNewCLItems({
 		}
 		break;
 	}
-
+	console.log('INSIDE handleNewCLItems 10');
 	if (newCLPercentMessage) {
 		globalClient.emit(Events.ServerNotification, newCLPercentMessage);
 	}
-
+	console.log('INSIDE handleNewCLItems 11');
 	const clsWithTheseItems = allCollectionLogsFlat.filter(
 		cl => cl.counts !== false && newCLItems.items().some(([newItem]) => cl.items.includes(newItem.id))
 	);
-
+	console.log('INSIDE handleNewCLItems 12');
 	// Find CLs with the newly added items, that weren't completed in the previous CL, and now are completed.
 	const newlyCompletedCLs = clsWithTheseItems.filter(cl => {
 		return cl.items.some(item => !previousCL.has(item)) && cl.items.every(item => newCL.has(item));
 	});
-
+	console.log('INSIDE handleNewCLItems 13');
 	for (const finishedCL of newlyCompletedCLs) {
 		await insertUserEvent({
 			userID: user.id,
 			type: UserEventType.CLCompletion,
 			collectionLogName: finishedCL.name
 		});
+		console.log('INSIDE handleNewCLItems 13.1');
 		const kcString = finishedCL.fmtProg
 			? `They finished after... ${await finishedCL.fmtProg({
 					getKC: (id: number) => user.getKC(id),
@@ -105,6 +107,7 @@ export async function handleNewCLItems({
 					stats: await MUserStats.fromID(user.id)
 				})}!`
 			: '';
+		console.log('INSIDE handleNewCLItems 13.2');
 
 		const leaderboardUsers = await fetchCLLeaderboard({
 			ironmenOnly: false,
@@ -112,11 +115,11 @@ export async function handleNewCLItems({
 			resultLimit: 100_000,
 			clName: finishedCL.name
 		});
-
+		console.log('INSIDE handleNewCLItems 14');
 		const nthUser = leaderboardUsers.users.filter(u => u.qty === finishedCL.items.length).length;
 
 		const placeStr = nthUser > 100 ? '' : ` They are the ${formatOrdinal(nthUser)} user to finish this CL.`;
-
+		console.log('INSIDE handleNewCLItems 15');
 		globalClient.emit(
 			Events.ServerNotification,
 			`${user.badgedUsername} just finished the ${finishedCL.name} collection log!${placeStr} ${kcString}`

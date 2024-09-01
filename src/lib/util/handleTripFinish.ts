@@ -124,7 +124,7 @@ export async function handleTripFinish(
 	}
 	const perkTier = user.perkTier();
 	const messages: string[] = [];
-
+	console.log('I AM HERE 1');
 	const itemsToAddWithCL = new Bank();
 	const itemsToRemove = new Bank();
 	for (const effect of tripFinishEffects) {
@@ -140,30 +140,30 @@ export async function handleTripFinish(
 	if (itemsToAddWithCL.length > 0 || itemsToRemove.length > 0) {
 		await user.transactItems({ itemsToAdd: itemsToAddWithCL, collectionLog: true, itemsToRemove });
 	}
-
+	console.log('I AM HERE 2');
 	const clueReceived = loot ? ClueTiers.filter(tier => loot.amount(tier.scrollID) > 0) : [];
 
 	if (_messages) messages.push(..._messages);
 	if (messages.length > 0) {
 		message.content += `\n**Messages:** ${messages.join(', ')}`;
 	}
-
+	console.log('I AM HERE 3');
 	if (clueReceived.length > 0 && perkTier < PerkTier.Two) {
 		clueReceived.map(
 			clue => (message.content += `\n${Emoji.Casket} **You got a ${clue.name} clue scroll** in your loot.`)
 		);
 	}
-
+	console.log('I AM HERE 4');
 	const existingCollector = collectors.get(user.id);
 
 	if (existingCollector) {
 		existingCollector.stop();
 		collectors.delete(user.id);
 	}
-
+	console.log('I AM HERE 5');
 	const channel = globalClient.channels.cache.get(channelID);
 	if (!channelIsSendable(channel)) return;
-
+	console.log('I AM HERE 6');
 	const components: ButtonBuilder[] = [];
 	components.push(makeRepeatTripButton());
 	const casketReceived = loot ? ClueTiers.find(i => loot?.has(i.id)) : undefined;
@@ -190,16 +190,16 @@ export async function handleTripFinish(
 			components.push(makeOpenSeedPackButton());
 		}
 	}
-
+	console.log('I AM HERE 7');
 	if (_components) {
 		components.push(..._components);
 	}
-
+	console.log('I AM HERE 8');
 	handleTriggerShootingStar(user, data, components);
-
+	console.log('I AM HERE 9');
 	if (components.length > 0) {
 		message.components = makeComponents(components);
 	}
-
+	console.log('I AM HERE 10');
 	sendToChannelID(channelID, message);
 }
