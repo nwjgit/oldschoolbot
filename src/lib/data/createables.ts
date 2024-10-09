@@ -2432,7 +2432,7 @@ const Createables: Createable[] = [
 		outputItems: new Bank().add('Amulet of rancour (s)').freeze(),
 		customReq: async user => {
 			const requiredItems = resolveItems([
-				'Amulet of rancour',
+				'Amulet of rancour'
 				'Aranea boots',
 				'Araxyte slayer helmet',
 				'Noxious halberd',
