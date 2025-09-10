@@ -38,7 +38,7 @@ export interface ClueTier {
 	id: number;
 	scrollID: number;
 	timeToFinish: number;
-	milestoneRewards?: ClueMilestoneReward[];
+	milestoneReward?: ClueMilestoneReward;
 	mimicChance: number | false;
 	allItems: number[];
 	stashUnits: StashUnitTier;
@@ -54,16 +54,6 @@ export const ClueTiers: ClueTier[] = [
 		id: 23_245,
 		scrollID: 23_182,
 		timeToFinish: Time.Minute * 2.8,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor beginner scroll case'),
-				scoreNeeded: 50
-			},
-			{
-				itemReward: itemID('Major beginner scroll case'),
-				scoreNeeded: 100
-			}
-		],
 		mimicChance: false,
 		allItems: BeginnerCasket.allItems,
 		stashUnits: beginnerStashes,
@@ -77,20 +67,10 @@ export const ClueTiers: ClueTier[] = [
 		id: 20_546,
 		scrollID: 2677,
 		timeToFinish: Time.Minute * 3.2,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor easy scroll case'),
-				scoreNeeded: 100
-			},
-			{
-				itemReward: itemID('Major easy scroll case'),
-				scoreNeeded: 200
-			},
-			{
-				itemReward: itemID('Large spade'),
-				scoreNeeded: 500
-			}
-		],
+		milestoneReward: {
+			itemReward: itemID('Large spade'),
+			scoreNeeded: 500
+		},
 		mimicChance: false,
 		allItems: EasyCasket.allItems,
 		stashUnits: easyStashes,
@@ -104,20 +84,10 @@ export const ClueTiers: ClueTier[] = [
 		id: 20_545,
 		scrollID: 2801,
 		timeToFinish: Time.Minute * 5.1,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor medium scroll case'),
-				scoreNeeded: 100
-			},
-			{
-				itemReward: itemID('Major medium scroll case'),
-				scoreNeeded: 250
-			},
-			{
-				itemReward: itemID('Clueless scroll'),
-				scoreNeeded: 400
-			}
-		],
+		milestoneReward: {
+			itemReward: itemID('Clueless scroll'),
+			scoreNeeded: 400
+		},
 		mimicChance: false,
 		allItems: MediumCasket.allItems,
 		stashUnits: mediumStashes,
@@ -131,16 +101,6 @@ export const ClueTiers: ClueTier[] = [
 		id: 20_544,
 		scrollID: 2722,
 		timeToFinish: Time.Minute * 8.5,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor hard scroll case'),
-				scoreNeeded: 50
-			},
-			{
-				itemReward: itemID('Major hard scroll case'),
-				scoreNeeded: 150
-			}
-		],
 		mimicChance: false,
 		allItems: HardCasket.allItems,
 		stashUnits: hardStashes,
@@ -154,20 +114,10 @@ export const ClueTiers: ClueTier[] = [
 		id: 20_543,
 		scrollID: 12_073,
 		timeToFinish: Time.Minute * 8.5,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor elite scroll case'),
-				scoreNeeded: 50
-			},
-			{
-				itemReward: itemID('Major elite scroll case'),
-				scoreNeeded: 150
-			},
-			{
-				itemReward: itemID('Heavy casket'),
-				scoreNeeded: 200
-			}
-		],
+		milestoneReward: {
+			itemReward: itemID('Heavy casket'),
+			scoreNeeded: 200
+		},
 		mimicChance: 35,
 		allItems: EliteCasket.allItems,
 		stashUnits: eliteStashes,
@@ -181,20 +131,10 @@ export const ClueTiers: ClueTier[] = [
 		id: 19_836,
 		scrollID: 19_835,
 		timeToFinish: Time.Minute * 19.5,
-		milestoneRewards: [
-			{
-				itemReward: itemID('Minor master scroll case'),
-				scoreNeeded: 25
-			},
-			{
-				itemReward: itemID('Major master scroll case'),
-				scoreNeeded: 75
-			},
-			{
-				itemReward: itemID('Scroll sack'),
-				scoreNeeded: 100
-			}
-		],
+		milestoneReward: {
+			itemReward: itemID('Scroll sack'),
+			scoreNeeded: 100
+		},
 		mimicChance: 15,
 		allItems: MasterCasket.allItems,
 		stashUnits: masterStashes,
