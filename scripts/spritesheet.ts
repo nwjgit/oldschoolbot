@@ -6,7 +6,7 @@ import '../src/lib/safeglobals';
 import sharp from 'sharp';
 
 import { isFunction, uniqueArr } from 'e';
-import { Bank, type ItemBank, Items, resolveItems } from 'oldschooljs';
+import { Bank, type ItemBank, Items, getItem, resolveItems } from 'oldschooljs';
 import { ALL_OBTAINABLE_ITEMS } from '../src/lib/allObtainableItems';
 import { BOT_TYPE } from '../src/lib/constants';
 import { allCLItems } from '../src/lib/data/Collections';
@@ -174,6 +174,15 @@ async function generateGenericSpritesheet(inputDir: string, outputName: string) 
 async function main() {
 	if (BOT_TYPE !== 'OSB') throw new Error('This script is only for OSB.');
 	stopwatch.check('Making OSB spritesheet');
+		// --- New: Generate id → name JSON for allItems ---
+		const idNameMap: Record<number, string> = {};
+		for (const id of itemsMustBeInSpritesheet) {
+			const item = getItem(id); // lookup name
+			if (item) {
+				idNameMap[id] = item.name;
+			}
+		}
+		await fs.writeFile(path.join(SPRITESHEETS_DIR, 'jonesyTest-names.json'), JSON.stringify(idNameMap, null, 2));
 	await makeSpritesheet('./tmp/icons', 'items-spritesheet', itemsMustBeInSpritesheet).catch(err =>
 		console.error(`Failed to make OSB spritesheet: ${err.message}`)
 	);
