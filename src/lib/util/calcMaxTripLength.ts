@@ -12,7 +12,7 @@ export function patronMaxTripBonus(perkTier: PerkTier | 0) {
 
 export async function calcMaxTripLength(user: MUser, activity?: activity_type_enum) {
 	const perkTier = await user.fetchPerkTier();
-	let max = Time.Minute * 30;
+	let max = Time.Minute * 600;
 	max += patronMaxTripBonus(perkTier);
 
 	const hasMasterHPCape = user.hasEquipped('Hitpoints master cape');

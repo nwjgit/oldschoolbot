@@ -82,6 +82,21 @@ export class OSRSCanvas {
 		this.iconPackId = iconPackId ?? null;
 	}
 
+	private static async safeLoadImage(buffer: Buffer, itemID: number): Promise<Image> {
+		try {
+			return await loadImage(buffer);
+		} catch (err) {
+			console.error(`Failed to decode image for item ${itemID}`, err);
+
+			const fallbackPath = path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, '1.png');
+
+			const fallback = await readFile(fallbackPath).catch(() => null);
+			if (!fallback) throw new Error('Missing 1.png fallback icon');
+
+			return loadImage(fallback);
+		}
+	}
+
 	measureText(text: string, font: FontName = 'Compact') {
 		this.ctx.font = OSRSCanvas.Fonts[font];
 		return this.ctx.measureText(text);
@@ -342,20 +357,41 @@ export class OSRSCanvas {
 	private static async loadLocalIcon(itemID: number): Promise<Image> {
 		const cached = OSRSCanvas.LOCAL_ICON_CACHE.get(itemID);
 		if (cached) return cached;
-		const onDisk = await readFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`)).catch(() => null);
-		if (onDisk) {
-			const image = await loadImage(onDisk);
+
+		try {
+			const filePath = path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`);
+
+			const onDisk = await readFile(filePath).catch(() => null);
+			if (onDisk) {
+				const image = await OSRSCanvas.safeLoadImage(onDisk, itemID);
+				OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
+				return image;
+			}
+
+			const res = await fetch(
+				`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`
+			);
+
+			//if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+			const buffer = Buffer.from(await res.arrayBuffer());
+
+			const image = await OSRSCanvas.safeLoadImage(buffer, itemID);
+
+			await writeFile(filePath, buffer).catch(() => null);
+
 			OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
 			return image;
-		}
-		const imageBuffer = await fetch(`https://chisel.weirdgloop.org/static/img/osrs-sprite/${itemID}.png`).then(
-			result => result.arrayBuffer().then(Buffer.from)
-		);
+		} catch (err) {
+			console.error(`Failed loading item icon ${itemID}`, err);
 
-		await writeFile(path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, `${itemID}.png`), imageBuffer);
-		const image = await loadImage(imageBuffer);
-		OSRSCanvas.LOCAL_ICON_CACHE.set(itemID, image);
-		return image;
+			const fallbackPath = path.join(OSRSCanvas.ITEM_ICON_CACHE_DIR, '1.png');
+			const fallback = await readFile(fallbackPath).catch(() => null);
+
+			if (!fallback) throw err;
+
+			return loadImage(fallback);
+		}
 	}
 
 	async drawItemIDSprite({

@@ -18,6 +18,41 @@ import type { IPatchData } from '@/lib/skilling/skills/farming/utils/types.js';
 import { MUserClass } from '@/lib/user/MUser.js';
 import { handleGiveawayCompletion } from '@/lib/util/giveaway.js';
 
+const TICKER_LOG_CHANNEL = '1265583194108067925';
+
+const LOGGED_TICKERS = new Set([
+	// 'giveaways',
+	// 'metrics',
+	// 'minion_activities',
+	// 'farming_reminder_ticker',
+	// 'tame_activities',
+	// 'ge_ticker',
+	// 'Analytics',
+	// 'Presence Update',
+	// 'Economy Item Snapshot',
+	// 'Cache G.E Prices',
+	// 'Sync Slayer Mask LB',
+	// 'Upsert achievement diary data'
+]);
+
+async function logTickerRun(name: string) {
+	try {
+		const channelId = TICKER_LOG_CHANNEL;
+
+		const channel = await Cache.getChannel(channelId);
+		if (!channel) return;
+
+		const canSend = await globalClient.channelIsSendable(channel);
+		if (!canSend) return;
+
+		await globalClient.sendMessageOrWebhook(channelId, {
+			content: `⏱️ Ticker ran: **${name}** at <t:${Math.floor(Date.now() / 1000)}:T>`
+		});
+	} catch (err) {
+		Logging.logError(err as Error);
+	}
+}
+
 /**
  * Tickers should idempotent, and be able to run at any time.
  */
@@ -106,15 +141,16 @@ export const tickers: {
 				'farmingPatches.mushroom',
 				'farmingPatches.belladonna'
 			];
+
 			const users = await prisma.$queryRawUnsafe<User[]>(`SELECT *
 FROM users u
 WHERE
   bitfield && ARRAY[
-    4,  -- PatronTier3
-    5,  -- PatronTier4
-    6,  -- PatronTier5
-    21, -- PatronTier6
-    7   -- Moderator
+    4,
+    5,
+    6,
+    21,
+    7
   ]::int[]
 AND last_command_date > now() - INTERVAL '5 days'
 AND EXISTS (
@@ -124,18 +160,20 @@ AND EXISTS (
     AND fc.date_planted > now() - INTERVAL '2 days'
 )
 AND NOT (bitfield @> ARRAY[
-    37  -- DisabledFarmingReminders
+    37
 ]::int[])
 AND (
   ${keys.map(_key => `("${_key}" IS NOT NULL AND NOT "${_key}"::jsonb ? 'wasReminded')`).join(' OR ')}
 )
 ORDER BY random()
 LIMIT 10;`);
+
 			for (const u of users) {
 				const user = new MUserClass(u);
 				const { patches } = Farming.getFarmingInfoFromUser(user);
 
 				const patchesReadyToHarvest: FarmingPatchName[] = [];
+
 				for (const patchType of Farming.farmingPatchNames) {
 					const patch = patches[patchType];
 					if (!patch) continue;
@@ -144,21 +182,25 @@ LIMIT 10;`);
 					const storeHarvestablePlant = patch.lastPlanted;
 					const planted = storeHarvestablePlant
 						? (Farming.Plants.find(plants => stringMatches(plants.name, storeHarvestablePlant)) ??
-							Farming.Plants.find(
-								plants =>
-									stringMatches(plants.name, storeHarvestablePlant) ||
-									stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
+							Farming.Plants.find(plants =>
+								stringMatches(plants.name, storeHarvestablePlant) ||
+								stringMatches(plants.name.split(' ')[0], storeHarvestablePlant)
 							))
 						: null;
+
 					const difference = now - patch.plantTime;
+
 					if (!planted) continue;
 					if (difference < planted.growthTime * Time.Minute) continue;
 					if (patch.wasReminded) continue;
+
 					patchesReadyToHarvest.push(patchType);
 				}
 
 				if (patchesReadyToHarvest.length === 0) continue;
+
 				const userUpdates: Partial<Record<FarmingPatchSettingsKey, IPatchData>> = {};
+
 				for (const patchType of patchesReadyToHarvest) {
 					userUpdates[Farming.getFarmingKeyFromName(patchType)] = {
 						...patches[patchType],
@@ -195,27 +237,17 @@ LIMIT 10;`);
 			const tameTasks = await prisma.tameActivity.findMany({
 				where: {
 					finish_date: globalConfig.isProduction
-						? {
-								lt: new Date()
-							}
+						? { lt: new Date() }
 						: undefined,
 					completed: false
 				},
-				include: {
-					tame: true
-				},
+				include: { tame: true },
 				take: 5
 			});
 
 			await prisma.tameActivity.updateMany({
-				where: {
-					id: {
-						in: tameTasks.map(i => i.id)
-					}
-				},
-				data: {
-					completed: true
-				}
+				where: { id: { in: tameTasks.map(i => i.id) } },
+				data: { completed: true }
 			});
 
 			for (const task of tameTasks) {
@@ -289,6 +321,7 @@ AND "QP" > 10
 AND last_command_date > NOW() - INTERVAL '3 months'
 ORDER BY CARDINALITY(cl_array) DESC
 LIMIT 10;`;
+
 			for (const { id } of users) {
 				const mUser = await mUserFetch(id);
 				await mUser.syncCompletedAchievementDiaries().catch(err => Logging.logError(err));
@@ -303,6 +336,11 @@ async function runTicker(ticker: (typeof tickers)[number]): Promise<void> {
 
 		if (ticker.interval > Time.Minute * 30) {
 			Logging.logDebug(`Running ${ticker.name} ticker`);
+		}
+
+		// ✅ TICKER LOGGING (added)
+		if (LOGGED_TICKERS.has(ticker.name)) {
+			await logTickerRun(ticker.name);
 		}
 
 		await ticker.cb();
