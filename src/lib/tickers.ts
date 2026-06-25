@@ -8,7 +8,7 @@ import { TimerManager } from '@sapphire/timer-manager';
 
 import type { User } from '@/prisma/main.js';
 import { analyticsTick } from '@/lib/analytics.js';
-import { globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE, globalConfig } from '@/lib/constants.js';
 import { GrandExchange } from '@/lib/grandExchange.js';
 import { cacheGEPrices } from '@/lib/marketPrices.js';
 import { collectMetrics } from '@/lib/metrics.js';
@@ -246,7 +246,7 @@ LIMIT 10;`);
 		timer: null,
 		interval: Time.Hour * 8.44,
 		cb: async () => {
-			globalClient.setPresence({ text: '/help' });
+			globalClient.setPresence({ text: globalConfig.isProduction ? '/help' : `Loaded: ${BOT_TYPE}` });
 		}
 	},
 	{

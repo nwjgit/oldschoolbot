@@ -3,7 +3,7 @@ import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoo
 import { onRawGuildCreate } from '@/discord/handlers/guildCreate.js';
 import { interactionHandler } from '@/discord/interactionHandler.js';
 import { OldSchoolBotClient } from '@/discord/OldSchoolBotClient.js';
-import { Channel, globalConfig } from '@/lib/constants.js';
+import { BOT_TYPE, Channel, globalConfig } from '@/lib/constants.js';
 import { onMessage } from '@/lib/events.js';
 import { onStartup } from '@/mahoji/lib/events.js';
 
@@ -89,11 +89,17 @@ client.on('guildCreate', async guild => {
 	}
 });
 
+console.log({
+	isProduction: globalConfig.isProduction,
+	BOT_TYPE
+});
+
 client.on('ready', async _d => {
-	globalClient.setPresence({
-		text: '/help',
-		type: ActivityType.Listening,
-		status: PresenceUpdateStatus.Online
-	});
-	await onStartup();
+    await globalClient.setPresence({
+        text: globalConfig.isProduction ? '/help' : `Loaded: ${BOT_TYPE}`,
+        type: ActivityType.Listening,
+        status: PresenceUpdateStatus.Online
+    });
+
+    await onStartup();
 });
