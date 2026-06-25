@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process';
 import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from '@oldschoolgg/discord';
 
 import { onRawGuildCreate } from '@/discord/handlers/guildCreate.js';
@@ -89,17 +90,31 @@ client.on('guildCreate', async guild => {
 	}
 });
 
-console.log({
-	isProduction: globalConfig.isProduction,
-	BOT_TYPE
-});
+// console.log({
+// 	isProduction: globalConfig.isProduction,
+// 	BOT_TYPE
+// });
 
 client.on('ready', async _d => {
-    await globalClient.setPresence({
-        text: globalConfig.isProduction ? '/help' : `Loaded: ${BOT_TYPE}`,
-        type: ActivityType.Listening,
-        status: PresenceUpdateStatus.Online
-    });
+	let text = '/help';
 
-    await onStartup();
+	if (!globalConfig.isProduction) {
+		let branch = 'unknown';
+
+		try {
+			branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
+		} catch {
+			// Ignore if git isn't available or this isn't a git checkout.
+		}
+
+		text = `${BOT_TYPE} • ${branch}`;
+	}
+
+	await globalClient.setPresence({
+		text,
+		type: ActivityType.Listening,
+		status: PresenceUpdateStatus.Online
+	});
+
+	await onStartup();
 });

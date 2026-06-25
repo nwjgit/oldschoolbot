@@ -241,14 +241,14 @@ LIMIT 10;`);
 			await analyticsTick();
 		}
 	},
-	{
-		name: 'Presence Update',
-		timer: null,
-		interval: Time.Hour * 8.44,
-		cb: async () => {
-			globalClient.setPresence({ text: globalConfig.isProduction ? '/help' : `Loaded: ${BOT_TYPE}` });
-		}
-	},
+	// {
+	// 	name: 'Presence Update',
+	// 	timer: null,
+	// 	interval: Time.Hour * 8.44,
+	// 	cb: async () => {
+	// 		globalClient.setPresence({ text: globalConfig.isProduction ? '/help' : `Loaded: ${BOT_TYPE}` });
+	// 	}
+	// },
 	{
 		name: 'Economy Item Snapshot',
 		timer: null,
